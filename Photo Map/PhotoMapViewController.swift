@@ -38,8 +38,7 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
             let vc = segue.destination as! LocationsViewController
             vc.delegate = self
         } else if segue.identifier == "fullImageSegue" {
-            let vc = segue.destination as! FullImageViewController
-            //vc.photo = myImages
+            
         }
         
     }
@@ -73,7 +72,30 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
     func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
         
         
-         self.navigationController?.popViewController(animated: true)
-        print("location was picked")
+         //self.navigationController?.popViewController(animated: true)
+        let _ = navigationController?.popViewController(animated: true)
+        let locationCoordinate = CLLocationCoordinate2D(latitude: CLLocationDegrees(latitude), longitude: CLLocationDegrees(longitude))
+        let annotation = MKPointAnnotation()
+        annotation.coordinate = locationCoordinate
+        annotation.title = "Picture!"
+        mapView.addAnnotation(annotation)
+      
+    }
+    
+    func mapView( _ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        let reuseID = "myAnnotationView"
+        
+        var annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseID)
+        if (annotationView == nil) {
+            annotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseID)
+            annotationView!.canShowCallout = true
+            annotationView!.leftCalloutAccessoryView = UIImageView(frame: CGRect(x:0, y:0, width: 50, height:50))
+        }
+        
+        let imageView = annotationView?.leftCalloutAccessoryView as! UIImageView
+        imageView.image = UIImage(named: "camera")
+        
+        return annotationView
     }
 }
