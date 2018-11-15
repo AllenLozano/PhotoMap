@@ -11,16 +11,18 @@ import MapKit
 
 class PhotoMapViewController: UIViewController {
 
-    var mapView: MKMapView!
+    @IBOutlet weak var mapView: MKMapView!
+    var myImages: UIImage!
     
     override func viewDidLoad() {
-        super.viewDidLoad()
-
         
+        
+        super.viewDidLoad()
         let sfRegion = MKCoordinateRegionMake(CLLocationCoordinate2DMake(37.783333, -122.416667),
                                               MKCoordinateSpanMake(0.1, 0.1))
         mapView.setRegion(sfRegion, animated: false)
-        // Do any additional setup after loading the view.
+        
+       
     }
 
     override func didReceiveMemoryWarning() {
@@ -34,9 +36,20 @@ class PhotoMapViewController: UIViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        
     }
     
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        let originalImage = info[UIImagePickerControllerOriginalImage] as! UIImage
+        let editedImage = info[UIImagePickerControllerEditedImage] as! UIImage
+        
+        myImages = originalImage
+        
+        
+        dismiss(animated: true, completion: {
+            self.performSegue(withIdentifier: "tagSegue", sender: nil)
+        })
+    }
 
 }
