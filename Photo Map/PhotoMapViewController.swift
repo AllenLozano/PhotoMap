@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, LocationsViewControllerDelegate, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     var myImages: UIImage!
@@ -18,11 +18,9 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
         
         
         super.viewDidLoad()
-        let sfRegion = MKCoordinateRegionMake(CLLocationCoordinate2DMake(37.783333, -122.416667),
-                                              MKCoordinateSpanMake(0.1, 0.1))
+        let sfRegion = MKCoordinateRegionMake(CLLocationCoordinate2DMake(37.783333, -122.416667),MKCoordinateSpanMake(0.1, 0.1))
         mapView.setRegion(sfRegion, animated: false)
-        
-       
+        mapView.delegate = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,6 +34,13 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "tagSegue" {
+            let vc = segue.destination as! LocationsViewController
+            vc.delegate = self
+        } else if segue.identifier == "fullImageSegue" {
+            let vc = segue.destination as! FullImageViewController
+            //vc.photo = myImages
+        }
         
     }
     
@@ -47,6 +52,9 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
         myImages = originalImage
         
         
+        dismiss(animated: true, completion: {
+            self.performSegue(withIdentifier: "tagSegue", sender: nil)
+        })
     }
    
     @IBAction func tapCamera(_ sender: Any) {
@@ -61,4 +69,11 @@ class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate,
         }
         
         self.present(vc, animated: true, completion: nil)    }
+    
+    func locationsPickedLocation(controller: LocationsViewController, latitude: NSNumber, longitude: NSNumber) {
+        
+        
+         self.navigationController?.popViewController(animated: true)
+        print("location was picked")
+    }
 }
