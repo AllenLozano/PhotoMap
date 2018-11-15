@@ -9,7 +9,7 @@
 import UIKit
 import MapKit
 
-class PhotoMapViewController: UIViewController {
+class PhotoMapViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     var myImages: UIImage!
@@ -47,9 +47,18 @@ class PhotoMapViewController: UIViewController {
         myImages = originalImage
         
         
-        dismiss(animated: true, completion: {
-            self.performSegue(withIdentifier: "tagSegue", sender: nil)
-        })
     }
-
+   
+    @IBAction func tapCamera(_ sender: Any) {
+        let vc = UIImagePickerController()
+        vc.delegate = self
+        vc.allowsEditing = true
+        
+        if UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.camera) {
+            vc.sourceType = UIImagePickerControllerSourceType.camera
+        } else {
+            vc.sourceType = UIImagePickerControllerSourceType.photoLibrary
+        }
+        
+        self.present(vc, animated: true, completion: nil)    }
 }
